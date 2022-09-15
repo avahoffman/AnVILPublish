@@ -196,7 +196,7 @@
 #' @export
 as_workspace <-
     function(path, namespace, name = NULL, create = FALSE, update = FALSE,
-             use_readme = FALSE, type = c('ipynb', 'rmd', 'both'))
+             use_readme = FALSE, use_setup_notebook = FALSE, type = c('ipynb', 'rmd', 'both'))
 {
     type = match.arg(type)
     stopifnot(
@@ -244,20 +244,25 @@ as_workspace <-
 
     !(create || update) || .set_tables(path, namespace, name)
 
-    ## create setup notebook
-    setup <- .package_depenencies(path)
-    data <- c(data, setup)
-    tmpl <- .template("setup-notebook.tmpl")
-    setup_notebook <- whisker.render(tmpl, data)
-    tmpdir <- tempfile()
-    dir.create(tmpdir)
-    rmd_setup_file <- paste0("00-", name, ".Rmd")
-    rmd_setup_path <- file.path(tmpdir, rmd_setup_file)
-    writeLines(setup_notebook, rmd_setup_path)
-
-    ## build vignettes and add to workspace
-    rmd_paths <- c(.vignette_paths(path))
-
+    # create setup notebook
+    if (use_setup_notebook) {
+      setup <- .package_depenencies(path)
+      data <- c(data, setup)
+      tmpl <- .template("setup-notebook.tmpl")
+      setup_notebook <- whisker.render(tmpl, data)
+      tmpdir <- tempfile()
+      dir.create(tmpdir)
+      rmd_setup_file <- paste0("00-", name, ".Rmd")
+      rmd_setup_path <- file.path(tmpdir, rmd_setup_file)
+      writeLines(setup_notebook, rmd_setup_path)
+      
+      ## build vignettes and add to workspace
+      rmd_paths <- c(.vignette_paths(path), rmd_setup_path)
+    } else {
+      ## build vignettes and add to workspace
+      rmd_paths <- .vignette_paths(path)
+    }
+ 
     !(create || update) || {
         as_notebook(
             rmd_paths, namespace, name, update = update || create, type
