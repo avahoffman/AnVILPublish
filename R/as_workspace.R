@@ -89,7 +89,7 @@
     yaml <- Map(function(x, title, rmd) {
         x$title <- unname(title)
         x$ipynb <- sub("\\.[Rr]md", ".ipynb", basename(rmd))
-        x$rmd <- sub("\\.[Rr]md", ".Rmd", basename(rmd))
+        x$rmd <- basename(rmd)
         x
     }, yaml, titles, rmd)
     vignette_description <- list(Vignettes = yaml)
@@ -257,6 +257,8 @@ as_workspace <-
 
     ## build vignettes and add to workspace
     rmd_paths <- c(.vignette_paths(path), rmd_setup_path)
+    
+    message(rmd_paths)
     !(create || update) || {
         as_notebook(
             rmd_paths, namespace, name, update = update || create, type
