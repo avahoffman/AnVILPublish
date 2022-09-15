@@ -256,9 +256,8 @@ as_workspace <-
     writeLines(setup_notebook, rmd_setup_path)
 
     ## build vignettes and add to workspace
-    rmd_paths <- c(.vignette_paths(path), rmd_setup_path)
-    
-    message(rmd_paths)
+    rmd_paths <- c(.vignette_paths(path))
+
     !(create || update) || {
         as_notebook(
             rmd_paths, namespace, name, update = update || create, type
