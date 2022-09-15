@@ -89,7 +89,7 @@
     yaml <- Map(function(x, title, rmd) {
         x$title <- unname(title)
         x$ipynb <- sub("\\.[Rr]md", ".ipynb", basename(rmd))
-        x$rmd <- rmd
+        x$rmd <- sub("\\.[Rr]md", ".Rmd", basename(rmd))
         x
     }, yaml, titles, rmd)
     vignette_description <- list(Vignettes = yaml)
