@@ -112,7 +112,7 @@
     function(notebooks, namespace, name)
 {
     bucket <- avbucket(namespace, name)
-    bucket_notebooks <- paste0(bucket, "/analysis/")
+    bucket_notebooks <- paste0(bucket, "/notebooks/")
     gsutil_cp(notebooks, bucket_notebooks)
     paste0(bucket_notebooks, basename(notebooks))
 }
